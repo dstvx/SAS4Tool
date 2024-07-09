@@ -13,4 +13,4 @@ Simple SAS 4: Zombie Assault profile editor written in Python. (Windows Only)
 ## How to build (must be already installed) (must have upx installed)
 - `pip install pyinstaller`
 - `pyinstaller main.py --onefile --add-data "lib;lib" -n SAS4Tool`
-- `upx /dist/SAS4Tool.exe --lzma --best`
+- `upx dist/SAS4Tool.exe --lzma --best --force`
