@@ -1,6 +1,8 @@
 # SAS4Tool
 Simple SAS 4: Zombie Assault profile editor written in Python.
 
+Download latest here: (download)[https://github.com/dstvx/SAS4Tool/releases/latest]
+
 ## How to run
 - `git clone https://github.com/dstvx/SAS4Tool.git`
 - `cd SAS4Tool`
