@@ -389,7 +389,7 @@ def initCheck():
         print(f"Initialization failed: {e}")
         import traceback
         traceback.print_exc()
-        exit()
+        exit(0)
 
 
 def cls():
@@ -456,7 +456,7 @@ def handleMenu(menu: Dict[str, Any], title: str = "Main Menu", parent: Optional[
             else:
                 cls()
                 print("\nExiting...")
-                exit()
+                exit(0)
         
         if key in (b'\xe0', b'\x00'):
             key = getch()

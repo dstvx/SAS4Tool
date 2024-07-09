@@ -17,5 +17,9 @@ def main():
 
 
 if __name__ == '__main__':
-    initCheck()
-    main()
+    try:
+        initCheck()
+        main()
+        exit(0)
+    except Exception as e:
+        pass
