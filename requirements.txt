@@ -1,0 +1,4 @@
+numpy==2.0.0
+pywin32==306
+steamid-converter==1.0.1
+vdf==3.4
