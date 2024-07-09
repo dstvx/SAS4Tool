@@ -270,6 +270,17 @@ def loadSave() -> Any:
 
 
 def writeSave(data: str) -> None:
+    oldProfile = getProfileSavePath() / 'OldProfile.save'
+    tmpProfile = getProfileSavePath() / 'TempProfile.save'
+
+    # Possible fix for account flags
+
+    if oldProfile.exists():
+        oldProfile.unlink()
+    
+    if tmpProfile.exists():
+        tmpProfile.unlink()
+
     return encodeToFile(jsdumps(data).encode("utf-8"), getProfileSavePath().open("wb+"))
 
 
@@ -389,7 +400,6 @@ def initCheck():
         print(f"Initialization failed: {e}")
         import traceback
         traceback.print_exc()
-        exit(0)
 
 
 def cls():
@@ -456,7 +466,7 @@ def handleMenu(menu: Dict[str, Any], title: str = "Main Menu", parent: Optional[
             else:
                 cls()
                 print("\nExiting...")
-                exit(0)
+                return None
         
         if key in (b'\xe0', b'\x00'):
             key = getch()

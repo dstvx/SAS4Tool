@@ -1,4 +1,4 @@
-from lib.utilities import loadSave, writeSave, promptInt, directFunction, menuOptions
+from lib.utilities import loadSave, writeSave, promptInt, directFunction, menuOptions, loadItems, nestedMenuOptions
 from typing import Union, List
 
 
@@ -120,6 +120,112 @@ def setNightmareTickets():
     return f"Set nightmare tickets to {amount}"
 
 
+@nestedMenuOptions
+def unlockWeaponCollection(weaponType: str = '__menu_options__'):
+    items = loadItems()
+    
+    if weaponType == '__menu_options__':
+        return {w.capitalize().replace('_', ' '): unlockWeaponCollection for w in items['weapons'].keys()}
+    
+    def setWeaponVersion(version: str = '__menu_options__'):
+        if version == '__menu_options__':
+            return {v.capitalize(): setWeaponVersion for v in items['weapons'][weaponType.lower().replace(' ', '_')].keys()}
+        
+        WEAPONS = items['weapons'][weaponType.lower().replace(' ', '_')][version.lower()]
+        
+        def unlockWeapon(weapon: str = '__menu_options__'):
+            if weapon == '__menu_options__':
+                return {w['Name']: unlockWeapon for w in WEAPONS}
+            
+            selectedWeapon = next((w for w in WEAPONS if w['Name'] == weapon), None)
+            if selectedWeapon:
+                userData = loadSave()
+                weaponID = selectedWeapon['ID']
+                
+                for x in userData['CollectionArrayWeapon']:
+                    if x['CollectionId'] == weaponID:
+                        x['CollectionUnlocked'] = not x['CollectionUnlocked']
+                        writeSave(userData)
+                        return f'{weapon} ({version}) has been {'unlocked' if x['CollectionUnlocked'] else 'locked'} in the collection.'
+                
+                return f'Could not find {weapon} ({version}) in the collection.'
+        
+        return unlockWeapon()
+    
+    return setWeaponVersion()
+
+
+@nestedMenuOptions
+def unlockArmorCollection(armorType: str = '__menu_options__'):
+    items = loadItems()
+    
+    if armorType == '__menu_options__':
+        return {a.capitalize().replace('_', ' '): unlockArmorCollection for a in items['armour'].keys()}
+    
+    def setArmorVersion(version: str = '__menu_options__'):
+        if version == '__menu_options__':
+            return {v.capitalize(): setArmorVersion for v in items['armour'][armorType.lower().replace(' ', '_')].keys()}
+        
+        ARMORS = items['armour'][armorType.lower().replace(' ', '_')][version.lower()]
+        
+        def unlockArmor(armor: str = '__menu_options__'):
+            if armor == '__menu_options__':
+                return {a['Name']: unlockArmor for a in ARMORS}
+            
+            selectedArmor = next((a for a in ARMORS if a['Name'] == armor), None)
+            if selectedArmor:
+                userData = loadSave()
+                armorID = selectedArmor['ID']
+                
+                for x in userData['CollectionArrayArmour']:
+                    if x['CollectionId'] == armorID:
+                        x['CollectionUnlocked'] = not x['CollectionUnlocked']
+                        writeSave(userData)
+                        return f'{armor} ({version}) has been {'unlocked' if x['CollectionUnlocked'] else 'locked'} in the collection.'
+                
+                return f'Could not find {armor} ({version}) in the collection.'
+        
+        return unlockArmor()
+    
+    return setArmorVersion()
+
+
+@nestedMenuOptions
+def toggleCollectionRewards(category: str = '__menu_options__'):
+    userData = loadSave()
+    rewards = userData['CollectionRewards']
+
+    weaponRewards = [key for key in rewards.keys() if key.startswith('CollectionRewardWeapon') or 
+                      any(weapon in key for weapon in ['Pistol', 'SMG', 'Assault', 'Shotgun', 'Sniper', 'Rocket', 'LMG'])]
+    armourRewards = [key for key in rewards.keys() if key.startswith('CollectionRewardArmour') or 
+                     any(armor in key for armor in ['Helmet', 'Torso', 'Gloves', 'Pants', 'Boots'])]
+
+    def toggleReward(reward: str = '__menu_options__'):
+        if reward == '__menu_options__':
+            return {key: toggleReward for key in rewards.keys() if key in (weaponRewards if category == 'Weapons' else armourRewards)}
+        
+        if reward == 'Toggle All':
+            new_value = not all(rewards[key] for key in (weaponRewards if category == 'Weapons' else armourRewards))
+            for key in (weaponRewards if category == 'Weapons' else armourRewards):
+                rewards[key] = new_value
+            writeSave(userData)
+            return f"All {category} rewards set to {new_value}"
+        
+        rewards[reward] = not rewards[reward]
+        writeSave(userData)
+        return f"{reward} set to {rewards[reward]}"
+
+    if category == '__menu_options__':
+        return {
+            'Weapons': toggleCollectionRewards,
+            'Armor': toggleCollectionRewards
+        }
+
+    options = toggleReward()
+    options['Toggle All'] = toggleReward
+    return options
+
+
 ACCOUNT = {
     'Factions': {
         'Set credits': setCredits,
@@ -131,5 +237,10 @@ ACCOUNT = {
     },
     'Remove ads (Mobile only)': removeAds,
     'Revive tokens': setTokens,
-    'Nightmare tickets': setNightmareTickets
+    'Nightmare tickets': setNightmareTickets,
+    'Unlock collections': {
+        'Weapon collection': unlockWeaponCollection,
+        'Armour collection': unlockArmorCollection
+    },
+    'Toggle rewards': toggleCollectionRewards
 }

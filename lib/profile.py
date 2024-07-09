@@ -7,7 +7,6 @@ from lib.utilities import (
     directFunction,
     promptInt,
     promptStr,
-    const,
     getProfiles,
     loadItems
 )
@@ -303,6 +302,16 @@ def setPremiumWeapons(weaponType: str = '__menu_options__'):
         
     return setPremWeapon()
 
+@directFunction
+def setMasteryLevels():
+    userData = loadSave()
+    profile = loadConfig()['current_profile']
+    for i in userData['MasteryProgress'][f'Mastery{profile}']:
+        i['MasteryXp'] = 542400
+        i['MasteryLvl'] = 5
+    writeSave(userData)
+    return 'Masteries set to max level'
+
 
 PROFILE = {
     'Set items': {
@@ -320,7 +329,7 @@ PROFILE = {
     'Set augment cores': setAugCores,
     'Add random black strongbox': setRandBlackStrongbox,
     'Activate free skill reset': activateSkillReset,
+    'Set mastery to max level': setMasteryLevels,
     'Change name': changeUsername,
-    'Delete a profile': deleteProfile,
-    'Unlock collections': ...,
+    'Delete a profile': deleteProfile
 }

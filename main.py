@@ -3,6 +3,7 @@ from lib.utilities import initCheck, handleMenu
 from lib.account import ACCOUNT
 from lib.cfg import CFG
 from lib.profile import PROFILE
+from sys import exit
 
 
 MAIN = {
@@ -17,9 +18,6 @@ def main():
 
 
 if __name__ == '__main__':
-    try:
-        initCheck()
-        main()
-        exit(0)
-    except Exception as e:
-        pass
+    initCheck()
+    main()
+    exit()
