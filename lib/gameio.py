@@ -1,3 +1,5 @@
+# Credits to https://gitlab.com/an-sasza4-projects/sasza4-py-kucingoren
+
 from typing import SupportsInt, BinaryIO, Iterator, Union
 from io import DEFAULT_BUFFER_SIZE, FileIO
 from pathlib import Path
